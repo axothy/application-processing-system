@@ -1,6 +1,5 @@
 package com.example.applicationprocessingsystem.security;
 
-import com.example.applicationprocessingsystem.exceptions.UnableToEditDraftException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

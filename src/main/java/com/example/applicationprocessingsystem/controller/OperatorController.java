@@ -66,10 +66,8 @@ public class OperatorController implements OperatorApi {
     }
 
     private List<ApplicationComponent> responseFromApplications(List<Application> applications) {
-        List<ApplicationComponent> response = applications.stream()
+        return applications.stream()
                 .map(application -> mapper.map(application, ApplicationComponent.class))
                 .collect(Collectors.toList());
-
-        return response;
     }
 }

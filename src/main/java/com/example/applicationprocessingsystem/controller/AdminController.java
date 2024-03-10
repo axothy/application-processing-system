@@ -47,18 +47,14 @@ public class AdminController implements AdminApi {
     }
 
     private List<UserComponent> responseFromUsers(List<User> users) {
-        List<UserComponent> response = users.stream()
+        return users.stream()
                 .map(user -> mapper.map(user, UserComponent.class))
                 .collect(Collectors.toList());
-
-        return response;
     }
 
     private List<ApplicationComponent> responseFromApplications(List<Application> applications) {
-        List<ApplicationComponent> response = applications.stream()
+        return applications.stream()
                 .map(application -> mapper.map(application, ApplicationComponent.class))
                 .collect(Collectors.toList());
-
-        return response;
     }
 }

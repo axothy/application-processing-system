@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    User getUser(Long userId);
     User getUser(String username);
     Application getApplicationById(Long applicationId);
     List<Application> getApplications(User user, int page, String sortDirection);

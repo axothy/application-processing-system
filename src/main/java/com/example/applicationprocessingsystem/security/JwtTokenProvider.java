@@ -19,7 +19,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private static final long TOKEN_VALIDITY_MS = 3600000;
+    private static final long TOKEN_VALIDITY_MS = 3_600_000L;
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
     private static final int BEARER_TOKEN_OFFSET = 7;
     private final Key key = Keys.secretKeyFor(SIGNATURE_ALGORITHM);
