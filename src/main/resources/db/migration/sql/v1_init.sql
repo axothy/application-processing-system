@@ -6,12 +6,20 @@ create table if not exists users
     role                 varchar(20) not null
 );
 
+create table if not exists phones
+(
+    id                 serial primary key,
+    country_code       integer not null,
+    city_code          integer not null,
+    number             integer not null
+);
+
 create table if not exists applications
 (
     id                 serial primary key,
     user_id            integer references users (id),
+    phone_id           integer references phones (id),
     name               varchar(70) not null,
-    phone_number       varchar(70) not null,
     text               text,
     status             varchar(20) not null,
     creation_date      timestamp

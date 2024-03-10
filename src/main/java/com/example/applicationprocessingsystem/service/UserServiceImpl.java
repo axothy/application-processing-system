@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NavigableSet;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PhoneNumberService phoneNumberService;
 
     @Override
     public User getUser(String username) {
@@ -50,31 +54,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Application createApplication(Application newApplication) {
-        newApplication.setStatus(ApplicationStatus.SENT);
-        newApplication.setCreationDate(LocalDateTime.now());
+    public Application createApplication(String name, String text, String phoneNumber, User user) {
+        Application application = new Application();
+        application.setName(name);
+        application.setText(text);
+        application.setUser(user);
+        application.setStatus(ApplicationStatus.SENT);
+        application.setCreationDate(LocalDateTime.now());
+        application.setPhone(phoneNumberService.getPhoneNumber(phoneNumber));
 
-        return applicationRepository.save(newApplication);
+        return applicationRepository.save(application);
     }
 
     @Override
-    public Application createDraft(Application newDraft) {
-        newDraft.setStatus(ApplicationStatus.DRAFT);
-        //TODO: creation date of draft is current time or when draft is sent to operators?
-        newDraft.setCreationDate(LocalDateTime.now());
+    public Application createDraft(String name, String text, String phoneNumber, User user) {
+        Application draft = new Application();
+        draft.setName(name);
+        draft.setText(text);
+        draft.setUser(user);
+        draft.setStatus(ApplicationStatus.DRAFT);
+        draft.setCreationDate(LocalDateTime.now());
+        draft.setPhone(phoneNumberService.getPhoneNumber(phoneNumber));
 
-        return applicationRepository.save(newDraft);
+        return applicationRepository.save(draft);
     }
 
     @Override
-    public Application editDraft(Application sourceApplication, Application edited) {
+    public Application editDraft(Application sourceApplication, String newName, String newText, String newPhoneNumber) {
         if (sourceApplication.getStatus() != ApplicationStatus.DRAFT) {
             throw new UnableToEditDraftException();
         }
 
-        sourceApplication.setText(edited.getText());
-        sourceApplication.setName(edited.getName());
-        sourceApplication.setPhoneNumber(edited.getPhoneNumber());
+        sourceApplication.setText(newText);
+        sourceApplication.setName(newName);
+        sourceApplication.setPhone(phoneNumberService.getPhoneNumber(newPhoneNumber));
 
         return applicationRepository.save(sourceApplication);
     }

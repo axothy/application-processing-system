@@ -10,8 +10,8 @@ public interface UserService extends UserDetailsService {
     User getUser(String username);
     Application getApplicationById(Long applicationId);
     List<Application> getApplications(User user, int page, String sortDirection);
-    Application createApplication(Application newApplication);
-    Application createDraft(Application newDraft);
-    Application editDraft(Application sourceApplication, Application edited);
+    Application createApplication(String name, String text, String phoneNumber, User user);
+    Application createDraft(String name, String text, String phoneNumber, User user);
+    Application editDraft(Application sourceApplication, String newName, String newText, String newPhoneNumber);
     Application sendDraft(Application draft);
 }

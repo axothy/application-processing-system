@@ -1,7 +1,7 @@
 package com.example.applicationprocessingsystem.controller;
 
-import com.example.applicationprocessingsystem.security.AuthenticationRequest;
-import com.example.applicationprocessingsystem.security.AuthenticationResponse;
+import com.example.applicationprocessingsystem.security.dto.AuthenticationRequest;
+import com.example.applicationprocessingsystem.security.dto.AuthenticationResponse;
 import com.example.applicationprocessingsystem.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

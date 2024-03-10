@@ -39,8 +39,13 @@ public class UserController implements UserApi {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        Application edited = mapper.map(editDraftRequest, Application.class);
-        userService.editDraft(application, edited);
+        userService.editDraft(
+                application,
+                editDraftRequest.getName(),
+                editDraftRequest.getText(),
+                editDraftRequest.getPhoneNumber()
+        );
+
         return ResponseEntity.ok("Ok");
     }
 
@@ -70,20 +75,24 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<String> apiUserApplicationsCreateDraftPost(CreateDraftRequest createDraftRequest) {
-        Application application = mapper.map(createDraftRequest, Application.class);
-
-        application.setUser(utils.getUserDetails());
-        userService.createDraft(application);
+        userService.createDraft(
+                createDraftRequest.getName(),
+                createDraftRequest.getText(),
+                createDraftRequest.getPhoneNumber(),
+                utils.getUserDetails()
+        );
 
         return ResponseEntity.ok("Ok");
     }
 
     @Override
     public ResponseEntity<String> apiUserApplicationsCreatePost(CreateApplicationRequest createApplicationRequest) {
-        Application application = mapper.map(createApplicationRequest, Application.class);
-
-        application.setUser(utils.getUserDetails());
-        userService.createApplication(application);
+        userService.createApplication(
+                createApplicationRequest.getName(),
+                createApplicationRequest.getText(),
+                createApplicationRequest.getPhoneNumber(),
+                utils.getUserDetails()
+        );
 
         return ResponseEntity.ok("Ok");
     }

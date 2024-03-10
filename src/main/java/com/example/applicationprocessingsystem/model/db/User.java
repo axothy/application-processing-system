@@ -1,6 +1,7 @@
 package com.example.applicationprocessingsystem.model.db;
 
 import com.example.applicationprocessingsystem.security.Role;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

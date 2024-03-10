@@ -1,5 +1,6 @@
 package com.example.applicationprocessingsystem.model.db;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,9 +38,6 @@ public class Application {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
 
-    @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
-
     @Column(nullable = false)
     private String name;
 
@@ -49,6 +47,10 @@ public class Application {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "phone_id")
+    private PhoneNumber phone;
 
     @Override
     public boolean equals(Object o) {
@@ -60,7 +62,6 @@ public class Application {
         if (!Objects.equals(id, that.id)) return false;
         if (!Objects.equals(creationDate, that.creationDate)) return false;
         if (status != that.status) return false;
-        if (!Objects.equals(phoneNumber, that.phoneNumber)) return false;
         if (!Objects.equals(name, that.name)) return false;
         return Objects.equals(text, that.text);
     }
@@ -70,7 +71,6 @@ public class Application {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
@@ -82,7 +82,6 @@ public class Application {
                 "id=" + id +
                 ", creationDate=" + creationDate +
                 ", status=" + status +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", name='" + name + '\'' +
                 ", text='" + text + '\'' +
                 '}';
