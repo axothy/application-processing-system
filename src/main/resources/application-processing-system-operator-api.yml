@@ -1,0 +1,203 @@
+openapi: 3.0.3
+info:
+  title: Application processing system API
+  version: 1.0.0
+security:
+  - bearerAuth: [ ]
+paths:
+  /api/operator/applications/get-applications:
+    get:
+      tags:
+        - Operator
+      summary: Get all submitted user applications
+      parameters:
+        - in: query
+          required: true
+          name: page
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: sortByDate
+          required: true
+          schema:
+            type: string
+            enum: [asc, desc]
+        - in: query
+          name: filterByName
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Existing applications has been get successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Unable to get applications" }
+  /api/operator/applications/{applicationId}:
+    get:
+      tags:
+        - Operator
+      summary: Get submitted user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationComponent"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications:
+    get:
+      tags:
+        - Operator
+      summary: Get applications by username
+      parameters:
+        - in: query
+          required: true
+          name: name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications/{applicationId}/accept:
+    put:
+      tags:
+        - Operator
+      summary: Accept user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Application accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcceptApplicationResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications/{applicationId}/reject:
+    put:
+      tags:
+        - Operator
+      summary: Reject user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Application rejected successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RejectApplicationResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AcceptApplicationResponse:
+      type: string
+    RejectApplicationResponse:
+      type: string
+    ApplicationComponent:
+      type: object
+      properties:
+        id:
+          type: int
+          format: int64
+        name:
+          type: string
+        status:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - status
+        - creationDate
+        - text
+        - phoneNumber
+    ApplicationListComponent:
+      type: array
+      items:
+        $ref: "#/components/schemas/ApplicationComponent"
+    GetApplicationsResponse:
+      type: object
+      properties:
+        applicationsList:
+          $ref: "#/components/schemas/ApplicationListComponent"
+      required:
+        - applicationsList
+    ApiErrorDto:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - status
+        - message

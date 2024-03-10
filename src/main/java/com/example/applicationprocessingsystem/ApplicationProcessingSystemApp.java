@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class ApplicationProcessingSystemApplication {
+public class ApplicationProcessingSystemApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApplicationProcessingSystemApplication.class, args);
+		SpringApplication.run(ApplicationProcessingSystemApp.class, args);
 	}
 
 	@Bean

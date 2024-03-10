@@ -8,7 +8,7 @@ paths:
   /api/user/applications/{applicationId}:
     get:
       tags:
-        - Application
+        - User
       summary: Get user application
       parameters:
         - in: path
@@ -34,7 +34,7 @@ paths:
   /api/user/applications/create:
     post:
       tags:
-        - Application
+        - User
       summary: Create new application
       requestBody:
         required: true
@@ -59,7 +59,7 @@ paths:
   /api/user/applications/create-draft:
     post:
       tags:
-        - Application
+        - User
       summary: Create new draft
       requestBody:
         required: true
@@ -84,7 +84,7 @@ paths:
   /api/user/applications/{applicationId}/edit-draft:
     put:
       tags:
-        - Application
+        - User
       summary: Edit existing draft
       parameters:
         - in: path
@@ -116,7 +116,7 @@ paths:
   /api/user/applications/{applicationId}/send-draft:
     put:
       tags:
-        - Application
+        - User
       summary: Send existing draft to operator
       parameters:
         - in: path
@@ -142,7 +142,7 @@ paths:
   /api/user/applications/get-applications:
     get:
       tags:
-        - Application
+        - User
       summary: Get current user applications
       parameters:
         - in: query
@@ -150,9 +150,10 @@ paths:
           name: page
           schema:
             type: integer
-            format: int64
+            format: int32
         - in: query
           name: sortByDate
+          required: true
           schema:
             type: string
             enum: [asc, desc]
@@ -170,142 +171,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiErrorDto"
               example: { "status": "Bad Request", "message": "Application can not be sent" }
-  /api/operator/applications/get-applications:
-    get:
-      tags:
-        - Application
-      summary: Get all submitted user applications
-      parameters:
-        - in: query
-          required: true
-          name: page
-          schema:
-            type: integer
-            format: int64
-        - in: query
-          name: sortByDate
-          schema:
-            type: string
-            enum: [asc, desc]
-        - in: query
-          name: filterByName
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Existing applications has been get successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetApplicationsResponse"
-        '400':
-          description: ApplicationException
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiErrorDto"
-              example: { "status": "Bad Request", "message": "Unable to get applications" }
-  /api/operator/applications/{applicationId}:
-    get:
-      tags:
-        - Application
-      summary: Get submitted user application
-      parameters:
-        - in: path
-          required: true
-          name: applicationId
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: User application
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApplicationComponent"
-        '404':
-          description: Application not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiErrorDto"
-              example: { "status": "Not found", "message": "Application was not found" }
-  /api/operator/applications:
-    get:
-      tags:
-        - Application
-      summary: Get applications by username
-      parameters:
-        - in: query
-          required: true
-          name: name
-          schema:
-            type: string
-      responses:
-        '200':
-          description: User applications
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetApplicationsResponse"
-        '404':
-          description: Application not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiErrorDto"
-              example: { "status": "Not found", "message": "Application was not found" }
-  /api/operator/applications/{applicationId}/accept:
-    put:
-      tags:
-        - Application
-      summary: Accept user application
-      parameters:
-        - in: path
-          required: true
-          name: applicationId
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Application accepted successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AcceptApplicationResponse"
-        '404':
-          description: Application not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiErrorDto"
-              example: { "status": "Not found", "message": "Application was not found" }
-  /api/operator/applications/{applicationId}/reject:
-    put:
-      tags:
-        - Application
-      summary: Reject user application
-      parameters:
-        - in: path
-          required: true
-          name: applicationId
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Application rejected successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RejectApplicationResponse"
-        '404':
-          description: Application not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiErrorDto"
-              example: { "status": "Not found", "message": "Application was not found" }
 components:
   securitySchemes:
     bearerAuth:
@@ -320,10 +185,6 @@ components:
     EditDraftResponse:
       type: string
     SendDraftResponse:
-      type: string
-    AcceptApplicationResponse:
-      type: string
-    RejectApplicationResponse:
       type: string
     CreateApplicationRequest:
       type: object

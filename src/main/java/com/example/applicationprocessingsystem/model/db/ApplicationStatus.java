@@ -1,2 +1,5 @@
-package com.example.applicationprocessingsystem.model.db;public class ApplicationStatus {
+package com.example.applicationprocessingsystem.model.db;
+
+public enum ApplicationStatus {
+    DRAFT, SENT, ACCEPTED, REJECTED
 }

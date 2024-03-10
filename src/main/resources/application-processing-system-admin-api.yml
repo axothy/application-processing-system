@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Application processing system API
+  version: 1.0.0
+security:
+  - bearerAuth: [ ]
+paths:
+  /api/admin/applications/:
+    get:
+      tags:
+        - Admin
+      summary: Get all user applications
+      parameters:
+        - in: query
+          required: true
+          name: status
+          schema:
+            type: string
+        - in: query
+          required: true
+          name: page
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: sortByDate
+          required: true
+          schema:
+            type: string
+            enum: [asc, desc]
+        - in: query
+          name: filterByName
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Applications has been get successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Unable to get applications" }
+  /api/admin/users/:
+    get:
+      tags:
+        - Admin
+      summary: Get all users
+      parameters:
+        - in: query
+          required: true
+          name: page
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Users has been get successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUsersResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Unable to get users" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AcceptApplicationResponse:
+      type: string
+    RejectApplicationResponse:
+      type: string
+    ApplicationComponent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        status:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - status
+        - creationDate
+        - text
+        - phoneNumber
+    UserComponent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      required:
+        - id
+        - name
+    ApplicationListComponent:
+      type: array
+      items:
+        $ref: "#/components/schemas/ApplicationComponent"
+    UserListComponent:
+      type: array
+      items:
+        $ref: "#/components/schemas/UserComponent"
+    GetApplicationsResponse:
+      type: object
+      properties:
+        applicationsList:
+          $ref: "#/components/schemas/ApplicationListComponent"
+      required:
+        - applicationsList
+    GetUsersResponse:
+      type: object
+      properties:
+        usersList:
+          $ref: "#/components/schemas/UserListComponent"
+      required:
+        - usersList
+    ApiErrorDto:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - status
+        - message
