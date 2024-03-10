@@ -9,6 +9,7 @@ import com.example.applicationprocessingsystem.user.model.dto.CreateApplicationR
 import com.example.applicationprocessingsystem.user.model.dto.CreateDraftRequest;
 import com.example.applicationprocessingsystem.user.model.dto.EditDraftRequest;
 import com.example.applicationprocessingsystem.user.model.dto.GetApplicationsResponse;
+import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RolesAllowed({"ROLE_USER"})
 public class UserController implements UserApi {
     @Autowired
     private UserService userService;

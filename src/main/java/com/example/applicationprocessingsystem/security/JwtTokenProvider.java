@@ -1,46 +1,55 @@
 package com.example.applicationprocessingsystem.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private static final long TOKEN_VALIDITY_MS = 3600000;
+    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private static final int BEARER_TOKEN_OFFSET = 7;
+    private final Key key = Keys.secretKeyFor(SIGNATURE_ALGORITHM);
 
     public String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 3600000);
+        Date expires = new Date(now.getTime() + TOKEN_VALIDITY_MS);
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, key)
+                .setIssuedAt(now)
+                .setExpiration(expires)
+                .signWith(SIGNATURE_ALGORITHM, key)
                 .compact();
     }
 
-
-    public String resolveToken(HttpServletRequest request) {
-
+    public static String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return bearerToken.substring(BEARER_TOKEN_OFFSET);
         }
+
         return null;
     }
 
-    // Check if the token is valid and not expired
     public boolean validateToken(String token) {
-
         try {
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
@@ -50,17 +59,15 @@ public class JwtTokenProvider {
             log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty");
-        } catch (SignatureException e) {
-            log.error("there is an error with the signature of you token ");
         }
+
         return false;
     }
 
-    // Extract the username from the JWT token
     public String getUsername(String token) {
-
         return Jwts.parser()
                 .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();

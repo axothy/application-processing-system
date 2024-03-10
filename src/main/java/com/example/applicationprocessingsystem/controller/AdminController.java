@@ -9,6 +9,7 @@ import com.example.applicationprocessingsystem.model.db.Application;
 import com.example.applicationprocessingsystem.model.db.ApplicationStatus;
 import com.example.applicationprocessingsystem.model.db.User;
 import com.example.applicationprocessingsystem.service.AdminService;
+import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RolesAllowed({"ROLE_ADMIN"})
 public class AdminController implements AdminApi {
     @Autowired
     private AdminService adminService;

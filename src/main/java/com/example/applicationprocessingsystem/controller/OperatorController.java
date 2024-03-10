@@ -5,6 +5,7 @@ import com.example.applicationprocessingsystem.operator.OperatorApi;
 import com.example.applicationprocessingsystem.operator.model.dto.ApplicationComponent;
 import com.example.applicationprocessingsystem.operator.model.dto.GetApplicationsResponse;
 import com.example.applicationprocessingsystem.service.OperatorService;
+import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RolesAllowed({"ROLE_OPERATOR"})
 public class OperatorController implements OperatorApi {
     @Autowired
     private OperatorService operatorService;

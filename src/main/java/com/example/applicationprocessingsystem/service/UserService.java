@@ -2,10 +2,11 @@ package com.example.applicationprocessingsystem.service;
 
 import com.example.applicationprocessingsystem.model.db.Application;
 import com.example.applicationprocessingsystem.model.db.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
     User getUser(Long userId);
     User getUser(String username);
     Application getApplicationById(Long applicationId);
