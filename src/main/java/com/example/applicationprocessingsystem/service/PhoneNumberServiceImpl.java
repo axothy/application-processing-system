@@ -14,6 +14,8 @@ import java.util.Collections;
  */
 @Service
 public class PhoneNumberServiceImpl implements PhoneNumberService {
+    private static final String TOKEN = "Token ffe21a9464c74f27de8a016251615bf01245d2c2";     //fixme!! (use Vault/encryption)
+    private static final String API_KEY = "3dec45649b18a5f208a6c010fe33d11af601d002";         //fixme!!
     @Autowired
     private PhoneNumberFeignClient feignClient;
 
@@ -25,8 +27,8 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         PhoneNumberDto response = feignClient.getPhoneNumber(
                 "application/json",
                 "application/json",
-                "Token ffe21a9464c74f27de8a016251615bf01245d2c2",
-                "3dec45649b18a5f208a6c010fe33d11af601d002",
+                TOKEN,
+                API_KEY,
                 Collections.singletonList(number)).get(0);
         PhoneNumber phoneNumber = mapper.map(response, PhoneNumber.class);
 
