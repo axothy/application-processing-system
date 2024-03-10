@@ -1,0 +1,405 @@
+openapi: 3.0.3
+info:
+  title: Application processing system API
+  version: 1.0.0
+security:
+  - bearerAuth: [ ]
+paths:
+  /api/user/applications/{applicationId}:
+    get:
+      tags:
+        - Application
+      summary: Get user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationComponent"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/user/applications/create:
+    post:
+      tags:
+        - Application
+      summary: Create new application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApplicationRequest"
+      responses:
+        '200':
+          description: Application has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateApplicationResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Application can not be created" }
+  /api/user/applications/create-draft:
+    post:
+      tags:
+        - Application
+      summary: Create new draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDraftRequest"
+      responses:
+        '200':
+          description: Draft has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateDraftResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Draft can not be created" }
+  /api/user/applications/{applicationId}/edit-draft:
+    put:
+      tags:
+        - Application
+      summary: Edit existing draft
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditDraftRequest"
+      responses:
+        '200':
+          description: Draft has been edited successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EditDraftResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Application can not be edited" }
+  /api/user/applications/{applicationId}/send-draft:
+    put:
+      tags:
+        - Application
+      summary: Send existing draft to operator
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Draft has been sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendDraftResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Application can not be sent" }
+  /api/user/applications/get-applications:
+    get:
+      tags:
+        - Application
+      summary: Get current user applications
+      parameters:
+        - in: query
+          required: true
+          name: page
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: sortByDate
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Existing applications has been get successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Application can not be sent" }
+  /api/operator/applications/get-applications:
+    get:
+      tags:
+        - Application
+      summary: Get all submitted user applications
+      parameters:
+        - in: query
+          required: true
+          name: page
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: sortByDate
+          schema:
+            type: string
+            enum: [asc, desc]
+        - in: query
+          name: filterByName
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Existing applications has been get successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Unable to get applications" }
+  /api/operator/applications/{applicationId}:
+    get:
+      tags:
+        - Application
+      summary: Get submitted user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationComponent"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications:
+    get:
+      tags:
+        - Application
+      summary: Get applications by username
+      parameters:
+        - in: query
+          required: true
+          name: name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApplicationsResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications/{applicationId}/accept:
+    put:
+      tags:
+        - Application
+      summary: Accept user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcceptApplicationResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+  /api/operator/applications/{applicationId}/reject:
+    put:
+      tags:
+        - Application
+      summary: Reject user application
+      parameters:
+        - in: path
+          required: true
+          name: applicationId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application rejected successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RejectApplicationResponse"
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Not found", "message": "Application was not found" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateApplicationResponse:
+      type: string
+    CreateDraftResponse:
+      type: string
+    EditDraftResponse:
+      type: string
+    SendDraftResponse:
+      type: string
+    AcceptApplicationResponse:
+      type: string
+    RejectApplicationResponse:
+      type: string
+    CreateApplicationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+      required:
+        - name
+        - text
+        - phoneNumber
+    CreateDraftRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+      required:
+        - name
+    EditDraftRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+    ApplicationComponent:
+      type: object
+      properties:
+        id:
+          type: int
+          format: int64
+        name:
+          type: string
+        status:
+          type: string
+        phoneNumber:
+          type: string
+        text:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - status
+        - creationDate
+        - text
+        - phoneNumber
+    ApplicationListComponent:
+      type: array
+      items:
+        $ref: "#/components/schemas/ApplicationComponent"
+    GetApplicationsResponse:
+      type: object
+      properties:
+        applicationsList:
+          $ref: "#/components/schemas/ApplicationListComponent"
+      required:
+        - applicationsList
+    ApiErrorDto:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - status
+        - message
