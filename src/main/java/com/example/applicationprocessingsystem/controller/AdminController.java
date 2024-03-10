@@ -8,6 +8,7 @@ import com.example.applicationprocessingsystem.admin.model.dto.UserComponent;
 import com.example.applicationprocessingsystem.model.db.Application;
 import com.example.applicationprocessingsystem.model.db.ApplicationStatus;
 import com.example.applicationprocessingsystem.model.db.User;
+import com.example.applicationprocessingsystem.security.Role;
 import com.example.applicationprocessingsystem.service.AdminService;
 import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
@@ -27,8 +28,14 @@ public class AdminController implements AdminApi {
     private ModelMapper mapper;
 
     @Override
+    public ResponseEntity<String> apiAdminUserIdRolePut(String role, Long userId) {
+        adminService.changeRole(userId, Role.valueOf(role));
+
+        return ResponseEntity.ok("Ok");
+    }
+
+    @Override
     public ResponseEntity<GetApplicationsResponse> apiAdminApplicationsGet(String status, Integer page, String sortByDate, String filterByName) {
-        //TODO check is principal is admin
         List<Application> applications;
         if (filterByName != null) {
             applications = adminService.getApplications(ApplicationStatus.valueOf(status), page, sortByDate, filterByName);

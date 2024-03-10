@@ -4,6 +4,7 @@ import com.example.applicationprocessingsystem.model.db.Application;
 import com.example.applicationprocessingsystem.operator.OperatorApi;
 import com.example.applicationprocessingsystem.operator.model.dto.ApplicationComponent;
 import com.example.applicationprocessingsystem.operator.model.dto.GetApplicationsResponse;
+import com.example.applicationprocessingsystem.security.AuthUtils;
 import com.example.applicationprocessingsystem.service.OperatorService;
 import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,6 @@ public class OperatorController implements OperatorApi {
 
     @Override
     public ResponseEntity<String> apiOperatorApplicationsApplicationIdAcceptPut(Long applicationId) {
-        //TODO check if user is operator
         operatorService.accept(applicationId);
         return ResponseEntity.ok("Ok");
     }
@@ -39,7 +39,6 @@ public class OperatorController implements OperatorApi {
 
     @Override
     public ResponseEntity<String> apiOperatorApplicationsApplicationIdRejectPut(Long applicationId) {
-        //TODO check if user is operator
         operatorService.reject(applicationId);
         return ResponseEntity.ok("Ok");
     }
@@ -53,7 +52,7 @@ public class OperatorController implements OperatorApi {
     }
 
     @Override
-    public ResponseEntity<GetApplicationsResponse> apiOperatorApplicationsGetApplicationsGet(Integer page, String sortByDate, String filterByName) {
+    public ResponseEntity<GetApplicationsResponse> apiOperatorApplicationsAllGet(Integer page, String sortByDate, String filterByName) {
         List<Application> applications;
         if (filterByName == null) {
             applications = operatorService.getApplications(page, sortByDate);

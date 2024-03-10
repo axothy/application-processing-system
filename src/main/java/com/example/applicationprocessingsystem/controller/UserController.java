@@ -2,6 +2,7 @@ package com.example.applicationprocessingsystem.controller;
 
 import com.example.applicationprocessingsystem.model.db.Application;
 import com.example.applicationprocessingsystem.model.db.User;
+import com.example.applicationprocessingsystem.security.AuthUtils;
 import com.example.applicationprocessingsystem.service.UserService;
 import com.example.applicationprocessingsystem.user.UserApi;
 import com.example.applicationprocessingsystem.user.model.dto.ApplicationComponent;
@@ -12,7 +13,9 @@ import com.example.applicationprocessingsystem.user.model.dto.GetApplicationsRes
 import jakarta.annotation.security.RolesAllowed;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,11 +28,16 @@ public class UserController implements UserApi {
     private UserService userService;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private AuthUtils utils;
 
     @Override
     public ResponseEntity<String> apiUserApplicationsApplicationIdEditDraftPut(Long applicationId, EditDraftRequest editDraftRequest) {
         Application application = userService.getApplicationById(applicationId);
-        //TODO check that SecurityContextHolder.getContext().getAuthentication().getPrincipal() equals application.getUser()
+
+        if (!utils.isValidUser(application.getUser())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
 
         Application edited = mapper.map(editDraftRequest, Application.class);
         userService.editDraft(application, edited);
@@ -39,17 +47,24 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<ApplicationComponent> apiUserApplicationsApplicationIdGet(Long applicationId) {
         Application application = userService.getApplicationById(applicationId);
-        ApplicationComponent response = mapper.map(application, ApplicationComponent.class);
-        //TODO check that SecurityContextHolder.getContext().getAuthentication().getPrincipal() equals application.getUser()
 
+        if (!utils.isValidUser(application.getUser())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        ApplicationComponent response = mapper.map(application, ApplicationComponent.class);
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<String> apiUserApplicationsApplicationIdSendDraftPut(Long applicationId) {
-        userService.sendDraft(applicationId);
+        Application draft = userService.getApplicationById(applicationId);
 
-        //TODO check that SecurityContextHolder.getContext().getAuthentication().getPrincipal() equals application.getUser()
+        if (!utils.isValidUser(draft.getUser())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        userService.sendDraft(draft);
         return ResponseEntity.ok("Ok");
     }
 
@@ -57,7 +72,7 @@ public class UserController implements UserApi {
     public ResponseEntity<String> apiUserApplicationsCreateDraftPost(CreateDraftRequest createDraftRequest) {
         Application application = mapper.map(createDraftRequest, Application.class);
 
-        //TODO bind user to application here with SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+        application.setUser(utils.getUserDetails());
         userService.createDraft(application);
 
         return ResponseEntity.ok("Ok");
@@ -67,15 +82,15 @@ public class UserController implements UserApi {
     public ResponseEntity<String> apiUserApplicationsCreatePost(CreateApplicationRequest createApplicationRequest) {
         Application application = mapper.map(createApplicationRequest, Application.class);
 
-        //TODO bind user to application here with SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+        application.setUser(utils.getUserDetails());
         userService.createApplication(application);
 
         return ResponseEntity.ok("Ok");
     }
 
     @Override
-    public ResponseEntity<GetApplicationsResponse> apiUserApplicationsGetApplicationsGet(Integer page, String sortByDate) {
-        User user = userService.getUser("xxx"); //TODO get current user SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+    public ResponseEntity<GetApplicationsResponse> apiUserApplicationsGet(Integer page, String sortByDate) {
+        User user = utils.getUserDetails();
         List<Application> applications = userService.getApplications(user, page, sortByDate);
 
         List<ApplicationComponent> response = applications.stream()

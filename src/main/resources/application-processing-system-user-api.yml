@@ -139,7 +139,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiErrorDto"
               example: { "status": "Bad Request", "message": "Application can not be sent" }
-  /api/user/applications/get-applications:
+  /api/user/applications/:
     get:
       tags:
         - User

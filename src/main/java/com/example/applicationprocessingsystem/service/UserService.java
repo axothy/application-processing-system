@@ -13,5 +13,5 @@ public interface UserService extends UserDetailsService {
     Application createApplication(Application newApplication);
     Application createDraft(Application newDraft);
     Application editDraft(Application sourceApplication, Application edited);
-    Application sendDraft(Long applicationId);
+    Application sendDraft(Application draft);
 }

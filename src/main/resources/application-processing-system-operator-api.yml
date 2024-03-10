@@ -5,7 +5,7 @@ info:
 security:
   - bearerAuth: [ ]
 paths:
-  /api/operator/applications/get-applications:
+  /api/operator/applications/all:
     get:
       tags:
         - Operator

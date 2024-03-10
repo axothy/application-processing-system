@@ -80,17 +80,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Application sendDraft(Long applicationId) {
-        Application application = getApplicationById(applicationId);
-
-        if (application.getStatus() == ApplicationStatus.DRAFT) {
-            application.setCreationDate(LocalDateTime.now());
-            application.setStatus(ApplicationStatus.SENT);
+    public Application sendDraft(Application draft) {
+        if (draft.getStatus() == ApplicationStatus.DRAFT) {
+            draft.setCreationDate(LocalDateTime.now());
+            draft.setStatus(ApplicationStatus.SENT);
         } else {
             throw new UnableToSendDraftException();
         }
 
-        return applicationRepository.save(application);
+        return applicationRepository.save(draft);
     }
 
     @Override

@@ -5,6 +5,37 @@ info:
 security:
   - bearerAuth: [ ]
 paths:
+  /api/admin/{userId}/role:
+    put:
+      tags:
+        - Admin
+      summary: Change user role
+      parameters:
+        - in: query
+          required: true
+          name: role
+          schema:
+            type: string
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Role has changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeRoleResponse"
+        '400':
+          description: ApplicationException
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorDto"
+              example: { "status": "Bad Request", "message": "Unable to change role" }
   /api/admin/applications/:
     get:
       tags:
@@ -83,6 +114,8 @@ components:
     AcceptApplicationResponse:
       type: string
     RejectApplicationResponse:
+      type: string
+    ChangeRoleResponse:
       type: string
     ApplicationComponent:
       type: object
