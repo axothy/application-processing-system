@@ -12,9 +12,9 @@ spring:
     change-log: classpath:db/changelog.xml
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5499/applications_db
-    username: postgres
-    password: mysecretpassword
+    url: jdbc:postgresql://localhost:5432/applications_db
+    username:
+    password:
   hikari:
     maximum-pool-size: 20
     connectionTimeout: 40000

@@ -3,7 +3,7 @@ create table if not exists users
     id                   serial primary key,
     username             varchar(70) not null,
     password             varchar(70) not null,
-    role                 varchar(20) not null
+    role                 varchar(50) not null
 );
 
 create table if not exists phones
@@ -35,4 +35,3 @@ insert into users (username, password, role) values ('operator2', '$2a$12$i2kmzg
 insert into users (username, password, role) values ('operator3', '$2a$12$i2kmzg5iiDDIsHRuFCTKXegz3Bf6z3te2MxtNUfjAdMBHr26/8Ox6', 'ROLE_OPERATOR');
 
 insert into users (username, password, role) values ('admin1', '$2a$12$i2kmzg5iiDDIsHRuFCTKXegz3Bf6z3te2MxtNUfjAdMBHr26/8Ox6', 'ROLE_ADMIN');
-

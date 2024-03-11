@@ -166,8 +166,8 @@ components:
           type: string
         status:
           type: string
-        phoneNumber:
-          type: string
+        phone:
+          $ref: "#/components/schemas/ApplicationListComponent"
         text:
           type: string
         creationDate:
@@ -179,7 +179,7 @@ components:
         - status
         - creationDate
         - text
-        - phoneNumber
+        - phone
     ApplicationListComponent:
       type: array
       items:
@@ -201,3 +201,16 @@ components:
       required:
         - status
         - message
+    PhoneComponent:
+      type: object
+      properties:
+        countryCode:
+          type: string
+        cityCode:
+          type: string
+        number:
+          type: string
+      required:
+        - countryCode
+        - cityCode
+        - number

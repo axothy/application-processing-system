@@ -1,7 +1,8 @@
 package com.example.applicationprocessingsystem.controller;
 
-import com.example.applicationprocessingsystem.security.dto.AuthenticationRequest;
-import com.example.applicationprocessingsystem.security.dto.AuthenticationResponse;
+import com.example.applicationprocessingsystem.auth.AuthApi;
+import com.example.applicationprocessingsystem.auth.model.dto.AuthenticationRequest;
+import com.example.applicationprocessingsystem.auth.model.dto.AuthenticationResponse;
 import com.example.applicationprocessingsystem.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,25 +10,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin
-@RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    @Override
+    public ResponseEntity<AuthenticationResponse> apiAuthLoginPost(AuthenticationRequest authenticationRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getUsername(),
@@ -41,10 +35,9 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout() {
+    @Override
+    public ResponseEntity<String> apiAuthLogoutGet() {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok("Ok");
     }
-
 }

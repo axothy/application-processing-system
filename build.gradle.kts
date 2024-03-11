@@ -186,6 +186,48 @@ tasks.register<GenerateTask>("openApiGenerateUser") {
 	)
 }
 
+tasks.register<GenerateTask>("openApiGenerateAuth") {
+	generatorName.set("spring")
+	validateSpec.set(true)
+	inputSpec.set("$projectDir/src/main/resources/application-processing-system-auth-api.yml") // path to spec
+	outputDir.set("${layout.buildDirectory.asFile.get()}/generated/java")
+	sourceSets.main {
+		java.srcDirs("${layout.buildDirectory.asFile.get()}/generated/java")
+	}
+	apiPackage.set("com.example.applicationprocessingsystem.auth")
+	modelPackage.set("com.example.applicationprocessingsystem.auth.model.dto")
+	generateApiTests.set(false)
+	generateModelTests.set(false)
+	generateModelDocumentation.set(false)
+
+	globalProperties.set(
+		mapOf(
+			"generateSupportingFiles" to "false",
+			"models" to "",
+			"apis" to "",
+		),
+	)
+
+	configOptions.set(
+		mapOf(
+			"documentationProvider" to "none",
+			"generatedConstructorWithRequiredArgs" to "true",
+			"openApiNullable" to "false",
+			"useSpringBoot3" to "true",
+			"java8" to "false",
+			"skipDefaultInterface" to "true",
+			"interfaceOnly" to "true",
+			"serviceInterface" to "true",
+			"useTags" to "true",
+			"fullJavaUtil" to "false",
+			"hideGenerationTimestamp" to "true",
+			"sourceFolder" to "",
+			"library" to "spring-boot",
+			"serializationLibrary" to "jackson",
+		),
+	)
+}
+
 tasks.withType<JavaCompile> {
-	dependsOn("openApiGenerateUser", "openApiGenerateOperator", "openApiGenerateAdmin")
+	dependsOn("openApiGenerateUser", "openApiGenerateOperator", "openApiGenerateAdmin", "openApiGenerateAuth")
 }

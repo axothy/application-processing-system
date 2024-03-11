@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Application processing system API
+  version: 1.0.0
+security:
+  - bearerAuth: [ ]
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+      responses:
+        '200':
+          description: Success login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponse"
+  /api/auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Logout
+      responses:
+        '200':
+          description: Success logout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AuthenticationResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+      required:
+        - accessToken
+    LogoutResponse:
+      type: string
+    AuthenticationRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+
